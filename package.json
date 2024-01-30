@@ -1,0 +1,31 @@
+{
+  "name": "@uniswap/signer",
+  "version": "0.1.0",
+  "description": "Uniswap package for securely signing messages.",
+  "main": "index.js",
+  "license": "GPL",
+  "scripts": {
+    "test": "vitest",
+    "test:all": "yarn test && yarn test:integ && yarn test:manual_integ",
+    "test:integ": "true",
+    "test:manual_integ": "MANUAL_INTEGRATION_TESTS=true vitest",
+    "test:e2e": "true",
+    "typecheck": "tsc -noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.490.0",
+    "asn1.js": "^5.4.1",
+    "dotenv": "^16.3.2",
+    "ethers": "^5.6.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "@uniswap/utils": "^0.0.0",
+    "gts": "^5.2.0",
+    "ts-node": "^10.9.1",
+    "vitest": "^0.34.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
