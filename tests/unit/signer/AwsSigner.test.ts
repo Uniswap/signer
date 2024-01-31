@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
-import {describe, expect, it} from 'vitest';
 import {Signer} from 'ethers';
 
 import {AwsSigner} from 'src/signer/aws-signer/AwsSigner';
+import {describe, expect, it} from 'vitest';
 
 const ADDRESS = '0x61Fb9b83Ece274BdE3d1640dA6A394552a2eCC63';
 
@@ -24,6 +24,10 @@ export class AwsSignerTestInstance extends AwsSigner {
   }
 
   async signTransaction(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+
+  signTypedData(): Promise<string> {
     throw new Error('Method not implemented.');
   }
 }
@@ -66,11 +70,11 @@ describe('AwsSigner', () => {
 
   describe('recoverAddressFromTxSig', () => {
     const validSignature =
-      '0xf8618080809461fb9b83ece274bde3d1640da6a394552a2ecc6380841234567825a0c917c5ffb7d7ef95897bcbe090b4b388278e69b8205746f5d8ce136b0aa50efea00864f1eaa9ef8aa69acc221be4fc0b0e576c40310d26dffe574edb9798db61a4';
+      '0x02f86401808080809461fb9b83ece274bde3d1640da6a394552a2ecc63808412345678c080a0b118e3a53cf9eaa665b2385307d2d2a2acec8aa0dbfcf71e8e9f7ac728332d74a0594eb3aa671a7b6d25dfdfb29addbb79f59b31a4b1cf002c91e835d6b20e1934';
     const tx = {
       to: '0x61Fb9b83Ece274BdE3d1640dA6A394552a2eCC63',
       data: '0x12345678',
-      value: '0x',
+      value: '0x0',
       chainId: 1,
     };
 
@@ -96,11 +100,11 @@ describe('AwsSigner', () => {
 
     it('throws error on invalid signature recover', async () => {
       const invalidSignature =
-        '0xf8618080809461fb9b83ecf274bde3d1640da6a394552a2ecc6380841234567125a0c917c5fcb7d7ef95897bcbe090b4b388278e69b8205746f5d8ce136b0aa50efea00864f1eaa9ef8aa69acc221be4fc0b0e576c40310d26dffe574edb9798db61a5';
+        '0x02f86401808080809461fb9b83ece274bde3d1640da6a394552a2ecc63808412345678c080a0b118e3a53cf9eaa665b2385307d2d2a2acec8aa0dbfcf71e8e9f7ac728332d74a0594eb3aa671a7b6d25dfdfb29addbb79f59b31a4b1cf002c91e835d6b';
       expect(invalidSignature).not.toBe(validSignature);
       expect(async () => {
         await signer.recoverAddressFromTxSig(tx, invalidSignature);
-      }).rejects.toThrowError('invalid point');
+      }).rejects.toThrowError('invalid BytesLike value');
     });
   });
 

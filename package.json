@@ -16,7 +16,7 @@
     "@aws-sdk/client-kms": "^3.490.0",
     "asn1.js": "^5.4.1",
     "dotenv": "^16.3.2",
-    "ethers": "^5.6.6"
+    "ethers": "^6.8.1"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",

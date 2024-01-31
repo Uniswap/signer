@@ -1,19 +1,18 @@
 // @ts-ignore
 import * as asn1 from 'asn1.js';
-import {BigNumber, providers, Signer} from 'ethers';
 import {
+  AbstractSigner,
   getAddress as checksumAddress,
-  joinSignature,
   keccak256,
-  parseTransaction,
   recoverAddress,
   resolveProperties,
-  serializeTransaction,
-  UnsignedTransaction,
+  Signature,
+  Transaction,
+  TransactionRequest,
+  TypedDataDomain,
+  TypedDataField,
   verifyMessage,
-} from 'ethers/lib/utils';
-
-import {addressEquals} from '../../util/address';
+} from 'ethers';
 
 const EcdsaPubKey = asn1.define(
   'EcdsaPubKey',
@@ -42,11 +41,15 @@ const EcdsaSigAsnParse = asn1.define(
  * @see {@link https://luhenning.medium.com/the-dark-side-of-the-elliptic-curve-signing-ethereum-transactions-with-aws-kms-in-javascript-83610d9a6f81 Step by step guide of AWS signing}
  * @see {@link https://github.com/lucashenning/aws-kms-ethereum-signing/blob/master/aws-kms-sign.ts More details}
  */
-export abstract class AwsSigner extends Signer {
+export abstract class AwsSigner extends AbstractSigner {
   abstract getAddress(): Promise<string>;
   abstract signMessage(msg: Buffer | string): Promise<string>;
-  abstract signTransaction(
-    transaction: providers.TransactionRequest
+  abstract signTransaction(transaction: TransactionRequest): Promise<string>;
+  abstract signTypedData(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    value: Record<string, any>
   ): Promise<string>;
 
   constructor(protected readonly keyId: string) {
@@ -58,21 +61,22 @@ export abstract class AwsSigner extends Signer {
   }
 
   async recoverAddressFromTxSig(
-    transaction: providers.TransactionRequest,
+    transaction: TransactionRequest,
     signature: string
   ): Promise<string> {
     const normalizedTransaction = this.normalizeTransaction(transaction);
     const unsignedTx = (await resolveProperties(
       normalizedTransaction
-    )) as UnsignedTransaction;
-    const serializedTx = serializeTransaction(unsignedTx);
+    )) as Transaction;
+    const serializedTx = Transaction.from(unsignedTx).unsignedSerialized;
     const hash = keccak256(serializedTx);
 
-    const parsedTransaction = parseTransaction(signature);
-    const {r, s, v} = parsedTransaction;
-    if (!r || !s || !v) {
+    const parsedSignature = Transaction.from(signature).signature;
+    if (!parsedSignature) throw new Error('Failed to decode the signature');
+
+    const {r, s, v} = parsedSignature;
+    if (!r || !s || !v)
       throw new Error('signature is invalid. r, s, and v are required');
-    }
 
     return recoverAddress(hash, {r, s, v});
   }
@@ -89,9 +93,7 @@ export abstract class AwsSigner extends Signer {
     return checksumAddress(address);
   }
 
-  normalizeTransaction(
-    transaction: providers.TransactionRequest
-  ): providers.TransactionRequest {
+  normalizeTransaction(transaction: TransactionRequest): TransactionRequest {
     // Ethers will not serialize a transaction with a from address
     const normalizedTransaction = {...transaction};
     if (normalizedTransaction?.from) {
@@ -103,7 +105,7 @@ export abstract class AwsSigner extends Signer {
   async getJoinedSignature(msg: Buffer, signature: Buffer): Promise<string> {
     const {r, s} = this.getSigRs(signature);
     const v = await this.getSigV(msg, {r, s});
-    const joinedSignature = joinSignature({r, s, v});
+    const joinedSignature = Signature.from({r, s, v}).serialized;
     return joinedSignature;
   }
 
@@ -114,11 +116,11 @@ export abstract class AwsSigner extends Signer {
     const address = await this.getAddress();
     let v = 27;
     let recovered = recoverAddress(msgHash, {r, s, v});
-    if (!addressEquals(recovered, address)) {
+    if (!this.addressEquals(recovered, address)) {
       v = 28;
       recovered = recoverAddress(msgHash, {r, s, v});
     }
-    if (!addressEquals(recovered, address)) {
+    if (!this.addressEquals(recovered, address)) {
       throw new Error('signature is invalid. recovered address does not match');
     }
 
@@ -127,23 +129,27 @@ export abstract class AwsSigner extends Signer {
 
   getSigRs(signature: Buffer): {r: string; s: string} {
     const decoded = EcdsaSigAsnParse.decode(signature, 'der');
-    const rBn = BigNumber.from(`0x${decoded.r.toString(16)}`);
-    let sBn = BigNumber.from(`0x${decoded.s.toString(16)}`);
+    const rBn = BigInt(`0x${decoded.r.toString(16)}`);
+    let sBn = BigInt(`0x${decoded.s.toString(16)}`);
     // max value on the curve - https://www.secg.org/sec2-v2.pdf
     // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/utils/cryptography/ECDSA.sol#L138-L149
-    const secp256k1N = BigNumber.from(
+    const secp256k1N = BigInt(
       '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
     );
-    const secp256k1halfN = secp256k1N.div(BigNumber.from(2));
+    const secp256k1halfN = secp256k1N / BigInt('2');
 
     // Because of EIP-2 not all elliptic curve signatures are accepted
     // the value of s needs to be SMALLER than half of the curve
     // i.e. we need to flip s if it's greater than half of the curve
-    if (sBn.gt(secp256k1halfN)) {
-      sBn = secp256k1N.sub(sBn);
+    if (sBn > secp256k1halfN) {
+      sBn = secp256k1N - sBn;
     }
-    const r = rBn.toHexString();
-    const s = sBn.toHexString();
+    const r = `0x${rBn.toString(16)}`;
+    const s = `0x${sBn.toString(16)}`;
     return {r, s};
+  }
+
+  protected addressEquals(address1: string, address2: string): boolean {
+    return address1.toLowerCase() === address2.toLowerCase();
   }
 }

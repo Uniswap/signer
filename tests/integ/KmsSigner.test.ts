@@ -48,7 +48,7 @@ describe('KmsSigner', () => {
     const transaction: any = {
       to: address,
       data: '0x12345678',
-      value: '0x',
+      value: '0x0',
       chainId: 1,
     };
 

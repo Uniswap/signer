@@ -1,19 +1,22 @@
 import {
   GetPublicKeyCommand,
   KMSClient,
+  MessageType,
   SignCommand,
   SignCommandInput,
+  SigningAlgorithmSpec,
 } from '@aws-sdk/client-kms';
-import {providers} from 'ethers';
 import {
-  arrayify,
+  getBytes,
   hashMessage,
   keccak256,
   resolveProperties,
-  serializeTransaction,
-  UnsignedTransaction,
-} from 'ethers/lib/utils';
-
+  Transaction,
+  TransactionRequest,
+  TypedDataDomain,
+  TypedDataEncoder,
+  TypedDataField,
+} from 'ethers';
 import {AwsSigner} from './AwsSigner';
 
 export type KmsClientSignResponse = {
@@ -35,7 +38,7 @@ export type KmsClientPublicKeyResponse = {
  * environment variables.
  */
 export class KmsSigner extends AwsSigner {
-  private address: string;
+  private address?: string;
   client: KMSClient;
 
   constructor(
@@ -62,24 +65,34 @@ export class KmsSigner extends AwsSigner {
 
   async signMessage(msg: Buffer | string): Promise<string> {
     const hash = hashMessage(msg);
-    return this.signDigest(hash);
+    const signed = await this.signDigest(hash);
+    return signed;
   }
 
-  async signTransaction(
-    transaction: providers.TransactionRequest
-  ): Promise<string> {
+  async signTransaction(transaction: TransactionRequest): Promise<string> {
     const normalizedTransaction = this.normalizeTransaction(transaction);
     const unsignedTx = (await resolveProperties(
       normalizedTransaction
-    )) as UnsignedTransaction;
-    const serializedTx = serializeTransaction(unsignedTx);
+    )) as Transaction;
+    const serializedTx = Transaction.from(unsignedTx).unsignedSerialized;
     const hash = keccak256(serializedTx);
     const txSig: string = await this.signDigest(hash);
-    return serializeTransaction(unsignedTx, txSig);
+    unsignedTx.signature = txSig;
+    return Transaction.from(unsignedTx).serialized;
+  }
+
+  async signTypedData(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    value: Record<string, any>
+  ): Promise<string> {
+    const hash = TypedDataEncoder.hash(domain, types, value);
+    return this.signDigest(hash);
   }
 
   private async signDigest(digest: Buffer | string): Promise<string> {
-    const msg = Buffer.from(arrayify(digest));
+    const msg = Buffer.from(getBytes(digest));
     const signature: Buffer = await this.getSig(msg);
     return this.getJoinedSignature(msg, signature);
   }
@@ -96,8 +109,8 @@ export class KmsSigner extends AwsSigner {
     const params: SignCommandInput = {
       KeyId: this.keyId,
       Message: msg,
-      SigningAlgorithm: 'ECDSA_SHA_256',
-      MessageType: 'DIGEST',
+      SigningAlgorithm: SigningAlgorithmSpec.ECDSA_SHA_256,
+      MessageType: MessageType.DIGEST,
     };
     const command = new SignCommand(params);
     const res = (await this.client.send(command)) as KmsClientSignResponse;
