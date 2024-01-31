@@ -1,6 +1,6 @@
 {
   "name": "@uniswap/signer",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Uniswap package for securely signing messages.",
   "main": "index.js",
   "license": "GPL",
