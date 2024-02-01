@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Uniswap package for securely signing messages.",
   "main": "index.js",
-  "license": "GPL",
+  "license": "MIT",
   "scripts": {
     "test": "vitest",
     "test:all": "yarn test && yarn test:integ && yarn test:manual_integ",
