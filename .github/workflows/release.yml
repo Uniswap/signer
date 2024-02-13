@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-			- name: Load secret
+      - name: Load secret
         uses: 1password/load-secrets-action@d1a4e73495bde3551cf63f6c048588b8f734e21d
         with:
           # Export loaded secrets as environment variables
