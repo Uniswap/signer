@@ -23,7 +23,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           GITHUB_TOKEN: op://npm-deploy/uniswap-open-source-github-token/token
-          NPM_TOKEN: op://npm-deploy/npm-service-accountn/NPM_TOKEN
+          NPM_TOKEN: op://npm-deploy/npm-service-account/NPM_TOKEN
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
