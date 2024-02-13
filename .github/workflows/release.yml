@@ -1,4 +1,4 @@
-iname: Release
+name: Release
 
 on:
   push:
@@ -22,8 +22,8 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          GITHUB_TOKEN: op://Github-CI-CD/uniswap-open-source-github-token/token
-	  NPM_TOKEN: op://Github-CI-CD/npm-deploy-token/token
+          GITHUB_TOKEN: op://npm-deploy/uniswap-open-source-github-token/token
+					NPM_TOKEN: op://npm-deploy/npm-service-accountn/NPM_TOKEN
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
