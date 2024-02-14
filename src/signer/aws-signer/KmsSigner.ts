@@ -39,18 +39,12 @@ export type KmsClientPublicKeyResponse = {
  */
 export class KmsSigner extends AwsSigner {
   private address?: string;
-  client: KMSClient;
 
   constructor(
-    protected readonly keyId: string,
-    public readonly region: string
+    protected readonly client: KMSClient,
+    protected readonly keyId: string
   ) {
-    super(keyId);
-    this.client = new KMSClient({region});
-  }
-
-  connect(): KmsSigner {
-    return this;
+    super();
   }
 
   async getAddress(): Promise<string> {
@@ -91,7 +85,7 @@ export class KmsSigner extends AwsSigner {
     return this.signDigest(hash);
   }
 
-  private async signDigest(digest: Buffer | string): Promise<string> {
+  async signDigest(digest: Buffer | string): Promise<string> {
     const msg = Buffer.from(getBytes(digest));
     const signature: Buffer = await this.getSig(msg);
     return this.getJoinedSignature(msg, signature);

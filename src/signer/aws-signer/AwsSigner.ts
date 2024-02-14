@@ -51,13 +51,14 @@ export abstract class AwsSigner extends AbstractSigner {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: Record<string, any>
   ): Promise<string>;
-
-  constructor(protected readonly keyId: string) {
-    super();
-  }
+  abstract signDigest(digest: Buffer | string): Promise<string>;
 
   recoverAddressFromSig(msg: Buffer | string, signature: string): string {
     return verifyMessage(msg, signature);
+  }
+
+  connect(): AwsSigner {
+    return this;
   }
 
   async recoverAddressFromTxSig(

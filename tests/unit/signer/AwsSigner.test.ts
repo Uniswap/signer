@@ -1,20 +1,9 @@
-import * as dotenv from 'dotenv';
-import {Signer} from 'ethers';
-
 import {AwsSigner} from 'src/signer/aws-signer/AwsSigner';
 import {describe, expect, it} from 'vitest';
 
 const ADDRESS = '0x61Fb9b83Ece274BdE3d1640dA6A394552a2eCC63';
 
 export class AwsSignerTestInstance extends AwsSigner {
-  constructor(protected keyId: string) {
-    super(keyId);
-  }
-
-  connect(): Signer {
-    throw new Error('Method not implemented.');
-  }
-
   async getAddress(): Promise<string> {
     return ADDRESS;
   }
@@ -30,11 +19,14 @@ export class AwsSignerTestInstance extends AwsSigner {
   signTypedData(): Promise<string> {
     throw new Error('Method not implemented.');
   }
+
+  signDigest(digest: Buffer | string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 }
 
-dotenv.config();
 describe('AwsSigner', () => {
-  const signer = new AwsSignerTestInstance('keyId');
+  const signer = new AwsSignerTestInstance();
 
   describe('recoverAddressFromSig', () => {
     const validSignature =
