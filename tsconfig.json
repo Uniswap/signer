@@ -1,12 +1,21 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "module": "esnext",
+    "outDir": "dist",
+    "target": "es6",
+    "module": "commonjs",
+    "importHelpers": true,
+    "declaration": true,
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "lib": ["esnext", "dom"],
-    "baseUrl": "./",
-    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "strictPropertyInitialization": false,
-  }
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "skipLibCheck": true,
+  },
+  "exclude": ["./dist/**/*"]
 }
