@@ -6,8 +6,6 @@
   "license": "MIT",
   "scripts": {
     "test": "vitest",
-    "test:all": "yarn test && yarn test:integ",
-    "test:integ": "INTEGRATION_TESTS=true vitest && true",
     "test:e2e": "true",
     "typecheck": "tsc -noEmit"
   },

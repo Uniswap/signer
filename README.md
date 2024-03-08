@@ -5,22 +5,14 @@ given a [KmsClient](https://github.com/aws/aws-sdk-js-v3/tree/main/clients/clien
 it provides methods for signing Ethereum transactions.
 
 ## Testing
-Here are the following commands to test the code in this package. Whenever making changes to this package we should run the manual integration tests to ensure that the changes are not breaking. 
+The integration & unit tests run as part of the same suite. 
 
-### Unit tests
-```shell
-yarn test:unit
-```
-### Integration tests
-In order to run integration tests we need to run a local-kms service on port 8080.
+### Running tests
+In order to run the tests we need to run a local-kms service on port 8080.
 We can use [nsmithuk/local-kms](https://github.com/nsmithuk/local-kms) with docker.
 
-Simply run, and make sure the container is running before executing the integration tests.
+Simply run, and make sure the container is running before executing the tests.
 ```shell
 docker run -p 8080:8080 nsmithuk/local-kms
-yarn test:integ
-```
-### All tests
-```shell
-yarn test:all
+yarn test
 ```

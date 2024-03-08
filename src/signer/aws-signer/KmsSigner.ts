@@ -32,10 +32,9 @@ export type KmsClientPublicKeyResponse = {
  * from KMS public keys, sign messages, and generate EVM-compatible signatures. This class
  * also inherits functions from the ethers.js Signer class.
  *
- * NOTE: If making changes to this class test your changes by running the integration test
- * suit with yarn test:integ. In order to run these tests you will need to deploy a key
- * construct to your local KMS and add the KMS_KEY_ID, REGION, and address to your
- * environment variables.
+ * NOTE: If making changes to this class test your changes by running the test suit
+ * with `yarn test`. Make sure you have the local KMS container running.
+ * See README.md for instructions
  */
 export class KmsSigner extends AwsSigner {
   private address?: string;
