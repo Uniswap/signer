@@ -23,3 +23,7 @@ cdk.context.json
 
 # yarn
 yarn-error.log
+
+# vim
+*.swo
+*.swp
