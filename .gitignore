@@ -31,3 +31,4 @@ yarn-error.log
 .npmrc
 
 coverage
+.vscode/launch.json
