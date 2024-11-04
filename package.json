@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint . --max-warnings 0",
     "test": "vitest",
     "test:e2e": "true",
     "typecheck": "tsc -noEmit"

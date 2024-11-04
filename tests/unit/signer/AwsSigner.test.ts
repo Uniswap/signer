@@ -20,6 +20,7 @@ export class AwsSignerTestInstance extends AwsSigner {
     throw new Error('Method not implemented.');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   signDigest(digest: Buffer | string): Promise<string> {
     throw new Error('Method not implemented.');
   }
@@ -94,6 +95,8 @@ describe('AwsSigner', () => {
       const invalidSignature =
         '0x02f86401808080809461fb9b83ece274bde3d1640da6a394552a2ecc63808412345678c080a0b118e3a53cf9eaa665b2385307d2d2a2acec8aa0dbfcf71e8e9f7ac728332d74a0594eb3aa671a7b6d25dfdfb29addbb79f59b31a4b1cf002c91e835d6b';
       expect(invalidSignature).not.toBe(validSignature);
+
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       expect(async () => {
         await signer.recoverAddressFromTxSig(tx, invalidSignature);
       }).rejects.toThrowError('invalid BytesLike value');
@@ -185,7 +188,9 @@ describe('AwsSigner', () => {
         102, 67, 190, 246, 32, 217, 41, 16, 211,
       ]);
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       expect(async () => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         await signer.getJoinedSignature(msgBuffer, signatureBuffer);
       }).rejects.toThrowError(
         'signature is invalid. recovered address does not match'

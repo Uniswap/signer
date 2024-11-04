@@ -42,6 +42,7 @@ describe('KmsSigner', () => {
   });
   it('signTransaction', async () => {
     const address = await signer.getAddress();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transaction: any = {
       to: address,
       data: '0x12345678',
