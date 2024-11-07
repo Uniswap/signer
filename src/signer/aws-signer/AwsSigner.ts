@@ -17,6 +17,7 @@ import {
 
 const EcdsaPubKey = asn1.define(
   'EcdsaPubKey',
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   function (this: {seq: Function; key: Function}) {
     this.seq().obj(
       this.key('algo').seq().obj(this.key('a').objid(), this.key('b').objid()),
@@ -27,6 +28,7 @@ const EcdsaPubKey = asn1.define(
 
 const EcdsaSigAsnParse = asn1.define(
   'EcdsaSig',
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   function (this: {seq: Function; key: Function}) {
     this.seq().obj(this.key('r').int(), this.key('s').int());
   }

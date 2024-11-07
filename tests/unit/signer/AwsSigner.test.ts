@@ -190,7 +190,6 @@ describe('AwsSigner', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       expect(async () => {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         await signer.getJoinedSignature(msgBuffer, signatureBuffer);
       }).rejects.toThrowError(
         'signature is invalid. recovered address does not match'
