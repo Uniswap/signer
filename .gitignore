@@ -37,3 +37,6 @@ coverage
 
 dist
 .turbo
+
+# localstack
+volume/
