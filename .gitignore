@@ -40,3 +40,6 @@ dist
 
 # localstack
 volume/
+
+# pulumi
+**/Pulumi.dev.yaml
