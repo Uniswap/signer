@@ -40,3 +40,8 @@ dist
 
 # localstack
 volume/
+
+AWSCLIV2.pkg
+mise.toml
+
+.npmrc.config
