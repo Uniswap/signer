@@ -14,5 +14,5 @@ We can use [nsmithuk/local-kms](https://github.com/nsmithuk/local-kms) with dock
 Simply run, and make sure the container is running before executing the tests.
 ```shell
 docker run -p 8080:8080 nsmithuk/local-kms
-yarn test
+bun run test
 ```

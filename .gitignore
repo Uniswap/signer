@@ -3,6 +3,7 @@ node_modules
 
 # sst
 .sst
+.sst.config.*
 .build
 
 # opennext
@@ -45,3 +46,10 @@ AWSCLIV2.pkg
 mise.toml
 
 .npmrc.config
+
+
+
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

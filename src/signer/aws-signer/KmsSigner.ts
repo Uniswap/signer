@@ -33,7 +33,7 @@ export type KmsClientPublicKeyResponse = {
  * also inherits functions from the ethers.js Signer class.
  *
  * NOTE: If making changes to this class test your changes by running the test suit
- * with `yarn test`. Make sure you have the local KMS container running.
+ * with `bun run test`. Make sure you have the local KMS container running.
  * See README.md for instructions
  */
 export class KmsSigner extends AwsSigner {
