@@ -53,3 +53,6 @@ mise.toml
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+# local proto client build artifacts
+**/release-local/
