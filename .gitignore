@@ -56,3 +56,5 @@ mise.toml
 
 # local proto client build artifacts
 **/release-local/
+
+**/tmp/**
