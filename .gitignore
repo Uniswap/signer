@@ -58,3 +58,4 @@ mise.toml
 **/release-local/
 
 **/tmp/**
+.worktrees/
