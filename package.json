@@ -20,8 +20,7 @@
     "@uniswap/utils": "workspace:packages/utils",
     "gts": "5.3.1",
     "ts-node": "10.9.2",
-    "vitest": "0.34.1",
-    "vite": "4.4.9"
+    "vitest": "4.0.18"
   },
   "engines": {
     "node": ">=18.0.0"
