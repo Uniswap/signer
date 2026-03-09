@@ -1,4 +1,5 @@
 # Signer
+<!-- RunsOn verification test marker - will be removed by follow-up PR -->
 
 This package contains an abstract class `AwsSigner`, and its implementation `KmsSigner` that,
 given a [KmsClient](https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-kms) and a `keyId`,
